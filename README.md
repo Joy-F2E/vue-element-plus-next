@@ -55,6 +55,10 @@ npm run lint
 + 如何设计一个简单好用的组件
 + 二次封装组件的思想与技巧
 + 组合式使用现有组件
++ 命名规则
+  + 文件名：小驼峰
+  + 公共组件名：文件名大写 + index.vue
+  + 组件名：大驼峰
 
 ### 关于路由引入
 
@@ -110,3 +114,9 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 ##### 思考
 
 **如果想使用`自动导入`并且想使用`el-icon-xxx`命名方式，如何处理？**
+
+#### 2.父子组件传值
+
++ `v-model:value`
++ `defineProps`
++ `defineEmits`
