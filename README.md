@@ -55,3 +55,58 @@ npm run lint
 + 如何设计一个简单好用的组件
 + 二次封装组件的思想与技巧
 + 组合式使用现有组件
+
+### 关于路由引入
+
+> npm i vue-router@next -s
+
+```typescript
+import { createRouter, createWebHistory } from 'vue-router';
+// 引入路由record类型限制，直接引入会报错，必须加 type
+import type { RouteRecordRaw } from 'vue-router'
+import Home from '../views/Home.vue'
+
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    component: Home,
+    children: []
+  }
+]
+```
+
+### Element Plus使用
+
+#### 1.使用图标
+
+> element plus的图标全部变成了组件并使用svg格式，使用时需要先使用包管理器引入`npm i @element-plus/icons-vue`
+
+##### 1.1 引入方式
+
++ 全局注册
+
+```typescript
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
+const app = createApp(App)
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
+```
+
++ 按需引入（自动导入）
+
+> 使用 `unplugin-icons` 和 `unplugin-auto-import`从iconify中自动导入任何图标集
+配置参考：<https://github.com/sxzz/element-plus-best-practices/blob/db2dfc983ccda5570033a0ac608a1bd9d9a7f658/vite.config.ts#L21-L58>
+
+##### 1.2 格式转换，形成 `el-icon-xxx`形式
+
+```typescript
+  export const transToKeyBase = (key: string) => {
+    return key.replace(/([a-z])([A-Z])/, '$1-$2').toLocalLowerCase()
+  }
+```
+
+##### 思考
+
+**如果想使用`自动导入`并且想使用`el-icon-xxx`命名方式，如何处理？**

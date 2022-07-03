@@ -6,4 +6,8 @@
     padding: 0;
     margin: 0;
   }
+  svg {
+    width: 1em;
+    height: 1em;
+  }
 </style>
