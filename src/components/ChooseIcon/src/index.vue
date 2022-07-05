@@ -5,9 +5,14 @@
   <section class="m-dialog__height">
     <el-dialog custom-class="iconDialog" :title="title" v-model="dialogVisible" width="50%">
       <div class="container">
-        <div class="item" v-for="(item, index) in Object.keys(ElIcons)" :key="index">
+        <div
+          class="item"
+          v-for="(item, index) in Object.keys(ElIcons)"
+          :key="index"
+          @click="handleClickIcon(item)"
+        >
           <div class="icon">
-            <component :is="`el-icon-${transToKeyBase(item)}`"></component>
+            <component class="icon" :is="`el-icon-${transToKeyBase(item)}`"></component>
           </div>
           <span class="title">{{ item }}</span>
         </div>
@@ -16,8 +21,9 @@
   </section>
 </template>
 <script setup lang="ts">
-import * as ElIcons from '@element-plus/icons-vue'
-import { ref, watch, computed } from 'vue'
+import { useCopy } from '@/hooks/useCopy';
+import * as ElIcons from '@element-plus/icons-vue';
+import { ref, watch } from 'vue';
 import { transToKeyBase } from '../../../utils';
 
 let props = defineProps<{
@@ -31,6 +37,12 @@ let emits = defineEmits(['update:visible'])
 let dialogVisible = ref<boolean>(props.visible)
 let handleClick = () => {
   emits('update:visible', !props.visible)  
+}
+let handleClickIcon = (icon: string) => {
+  icon = transToKeyBase(icon)
+  let text = `<el-icon-${icon}></el-icon-${icon}>`
+  useCopy(text)
+  // dialogVisible.value = false
 }
 // 监听visible的变化
 watch(() => props.visible, (val) => {
