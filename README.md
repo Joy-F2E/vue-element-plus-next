@@ -120,3 +120,5 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 + `v-model:value`
 + `defineProps`
 + `defineEmits`
+
+#### 3.watch监听

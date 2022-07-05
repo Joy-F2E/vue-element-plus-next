@@ -2,10 +2,24 @@
   <el-button type="primary" @click="handleClick">
     <slot></slot>
   </el-button>
-  <el-dialog :title="title" v-model="dialogVisible">1111</el-dialog>
+  <section class="m-dialog__height">
+    <el-dialog custom-class="iconDialog" :title="title" v-model="dialogVisible" width="50%">
+      <div class="container">
+        <div class="item" v-for="(item, index) in Object.keys(ElIcons)" :key="index">
+          <div class="icon">
+            <component :is="`el-icon-${transToKeyBase(item)}`"></component>
+          </div>
+          <span class="title">{{ item }}</span>
+        </div>
+      </div>
+    </el-dialog>
+  </section>
 </template>
 <script setup lang="ts">
+import * as ElIcons from '@element-plus/icons-vue'
 import { ref, watch, computed } from 'vue'
+import { transToKeyBase } from '../../../utils';
+
 let props = defineProps<{
   // 弹出框标题
   title: string,
@@ -28,5 +42,27 @@ watch(() => dialogVisible.value, (val) => {
 
 </script>
 <style lang="scss" scoped>
-  
+.iconDialog {
+  max-height: 80vh;
+}
+.container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+.title {
+  font-size: 12px;
+}
+svg {
+  width: 1.5em;
+  height: 1.5em;
+}
 </style>
