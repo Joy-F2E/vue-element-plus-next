@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 // 引入路由record类型限制，直接引入会报错，必须加 type
-import type { RouteRecordRaw } from 'vue-router'
-import Home from '../views/Home.vue'
+import type { RouteRecordRaw } from 'vue-router';
 import Container from '../components/container/src/index.vue';
+import Home from '../views/Home.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -17,6 +17,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/chooseIcon',
         component: () => import('../../src/views/chooseIcon/index.vue')
+      },
+      {
+        path: '/chooseArea',
+        component: () => import('../../src/views/chooseArea/index.vue')
       }
     ]
   }
