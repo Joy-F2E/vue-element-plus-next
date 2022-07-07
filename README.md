@@ -124,3 +124,5 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 #### 3.watch监听
 
 #### 4.文本复制hook实现
+
+#### 5.interface 和 ‘!’ 的使用
