@@ -126,3 +126,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 #### 4.文本复制hook实现
 
 #### 5.interface 和 ‘!’ 的使用
+
+#### 6.全局注册组件并实现按需引入
+
++ 借助 `ts` 和 `vue install`
++ 也可以借助插件 `auto-import-component`

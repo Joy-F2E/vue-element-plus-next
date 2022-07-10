@@ -5,7 +5,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import mChooseArea from '@/components/ChooseArea/src/index.vue';
+// import mChooseArea from '@/components/ChooseArea/src/index.vue';
 
 const handleChange = (val: any) => {
   console.log(val);
