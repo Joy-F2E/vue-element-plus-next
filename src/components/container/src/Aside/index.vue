@@ -4,7 +4,7 @@
     class="el-menu-vertical-demo"
     :collapse="collapse"
   >
-    <el-menu-item index="1">
+    <el-menu-item index="1" route="{ path: '/' }" >
       <el-icon-menu />
       <template #title>Navigator One</template>
     </el-menu-item>
