@@ -131,3 +131,5 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 + 借助 `ts` 和 `vue install`
 + 也可以借助插件 `auto-import-component`
+
+#### 7.进度记录：3-6
