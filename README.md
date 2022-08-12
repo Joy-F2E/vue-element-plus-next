@@ -133,3 +133,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 + 也可以借助插件 `auto-import-component`
 
 #### 7.进度记录：3-6
+
+
+#### github
+
+> github: <https://github.com/Joy-F2E/vue-element-plus-next>
