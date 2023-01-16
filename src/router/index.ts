@@ -25,6 +25,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/trend',
         component: () => import('../../src/views/trend/index.vue')
+      },
+      {
+        path: '/table',
+        component: () => import('../../src/views/table/index.vue')
       }
     ]
   }
