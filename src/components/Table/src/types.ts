@@ -14,5 +14,7 @@ export interface TableOptions {
   // 自定义列表模板名称
   slot?: string,
   // 是否代表操作性
-  action?: boolean
+  action?: boolean,
+  // 是否可编辑单元格
+  editable?: boolean,
 }
