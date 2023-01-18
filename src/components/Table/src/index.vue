@@ -1,30 +1,38 @@
 <template>
   <el-table
-    :data="data"
+    :data="tableData"
     v-loading="loading"
     :element-loading-text="loadingText"
     :element-loading-spinner="loadingSpinner"
     element-loading-svg-view-box="-10, -10, 50, 50"
     :element-loading-background="loadingBackground"
+    @row-click="handleRowClick"
   >
     <template v-for="(item, index) in tableOptions" :key="index">
       <el-table-column :label="item.label" :prop="item.prop" :align="item.align" :width="item.width">
         <template #default="scope">
-          <!-- Tips: 可编辑单元格感觉处理的麻烦了，实际业务扩展性不太好 -->
-          <template v-if="(scope.$index + scope.column.id) === currentEdit">
-            <div style="display: flex; align-items: center">
-              <el-input v-model="scope.row[item.prop!]"></el-input>
-              <slot name="editCell" :scope="scope" :check="handleCheck" v-if="$slots.editCell"></slot>
-              <div class="icons" v-else>
-                <el-icon-check class="check" @click="handleCheck(scope)"></el-icon-check>
-                <el-icon-close class="close" @click="handleClose(scope)"></el-icon-close>
-              </div>
-            </div>
+          <template v-if="scope.row.isEditRow">
+            <el-input size="small" v-model="scope.row[item.prop!]"></el-input>
           </template>
           <template v-else>
-            <slot v-if="item.slot" :name="item.slot" :scope="scope"></slot>
-            <span v-else>{{ scope.row[item.prop!] }}</span>
-            <el-icon-edit v-if="item.editable" class="edit" @click="handleEdit(scope)"></el-icon-edit>
+            <!-- 单元格编辑：感觉处理的麻烦了，实际业务扩展性不太好 -->
+            <template v-if="(scope.$index + scope.column.id) === currentEdit">
+              <div style="display: flex; align-items: center">
+                <el-input v-model="scope.row[item.prop!]"></el-input>
+                <slot name="editCell" :scope="scope" :confirm="handleConfirm" :cancel="handleCancel" v-if="$slots.editCell"></slot>
+                <div class="icons" v-else>
+                  <el-icon-check class="confirm" @click.stop="handleConfirm(scope)"></el-icon-check>
+                  <el-icon-close class="cancel" @click.stop="handleCancel(scope)"></el-icon-close>
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <!-- 自定义数据列 -->
+              <slot v-if="item.slot" :name="item.slot" :scope="scope"></slot>
+              <span v-else>{{ scope.row[item.prop!] }}</span>
+              <!-- 某一列的单元格是否可编辑 -->
+              <el-icon-edit v-if="item.editable" class="edit" @click="handleEdit(scope)"></el-icon-edit>
+            </template>
           </template>
         </template>
       </el-table-column>
@@ -32,15 +40,17 @@
     <!-- 扩展列 -->
     <el-table-column :label="actionOptions!.label" :prop="actionOptions!.prop" :align="actionOptions!.align" :width="actionOptions!.width">
       <template #default="scope">
-        <slot name="action" :scope="scope"></slot>
+        <slot name="editRow" v-if="scope.row.isEditRow"></slot>
+        <slot name="action" :scope="scope" v-else></slot>
       </template>
     </el-table-column>
   </el-table>
 </template>
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, watch, ref, onMounted } from 'vue';
 import type { PropType } from 'vue'
 import type { TableOptions } from './types';
+import cloneDeep from 'lodash/cloneDeep';
 
 const props = defineProps({
   // 表格的配置
@@ -75,33 +85,77 @@ const props = defineProps({
   loadingBackground: {
     type: String,
     default: 'rgba(0, 0, 0, .8)'
+  },
+  isEditRow: {
+    type: Boolean,
+    default: false
+  },
+  editRowIndex: {
+    type: String,
+    default: ''
   }
 })
 
 // 分发事件
-const emits = defineEmits(['check', 'close'])
+const emits = defineEmits(['confirm', 'cancel', 'update:editRowIndex'])
 
-let tableOptions = computed(() => props.options.filter(item => !item.action))
+let tableData = ref<any[]>(cloneDeep(props.data))
 
-let actionOptions = computed(() => props.options.find(item => item.action))
+let cloneEditRowIndex = ref<string>(cloneDeep(props.editRowIndex))
 
-let currentEdit = ref('')
+let currentEdit = ref<string>('')
 
 const handleEdit = (scope: any) => {
   // 唯一的标识
   currentEdit.value = scope.$index + scope.column.id
 }
 
-const handleCheck = (scope: any) => {
-  console.log('check', scope);
+const handleConfirm = (scope: any) => {
   currentEdit.value = ''
-  emits('check', scope)
+  emits('confirm', scope)
 }
 
-const handleClose =(scope: any) => {
+const handleCancel =(scope: any) => {
   currentEdit.value = ''
-  emits('close', scope)
+  emits('cancel', scope)
 }
+
+// 点击编辑行
+const handleRowClick = (row: any, column: any) => {
+  if (column.label === actionOptions.value!.label) {
+    if (props.isEditRow && cloneEditRowIndex.value === props.editRowIndex) {
+      row.isEditRow = !row.isEditRow
+      tableData.value.map(item => {
+        if (item !== row) item.isEditRow = false
+      })
+      if (!row.isEditRow) {
+        emits('update:editRowIndex', '')
+      }
+    }
+  }
+}
+
+let tableOptions = computed(() => props.options.filter(item => !item.action))
+
+let actionOptions = computed(() => props.options.find(item => item.action))
+
+// 监听父组件传递的数据
+watch(() => props.data, val => {
+  if (val) {
+    tableData.value = cloneDeep(val).map(item => item. isEditRow = false)
+  }
+}, { deep: true })
+
+// 监听父组件传递的标识
+watch(() => props.editRowIndex, val => {
+  if (val) {
+    if (val) cloneEditRowIndex.value = cloneDeep(val)
+  }
+})
+
+onMounted(() => {
+  tableData.value.map(item => { item.isEditRow = false})
+})
 
 </script>
 <style lang="scss" scoped>
@@ -121,10 +175,10 @@ const handleClose =(scope: any) => {
       height: 1em;
       margin-left: 8px;
     }
-    .check {
+    .confirm {
       color: #f00;
     }
-    .close {
+    .cancel {
       color: green;
     }
   }
