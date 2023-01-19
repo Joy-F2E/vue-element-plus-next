@@ -48,7 +48,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, watch, ref, onMounted } from 'vue';
-import type { PropType } from 'vue'
+import type { PropType } from 'vue';
 import type { TableOptions } from './types';
 import cloneDeep from 'lodash/cloneDeep';
 
