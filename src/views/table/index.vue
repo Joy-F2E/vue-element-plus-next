@@ -1,5 +1,15 @@
 <template>
-  <m-table :data="tableData" :options="options" :loading="isLoading" isEditRow v-model:editRowIndex="editRowIndex" @confirm="handleConfirm">
+  <m-table
+    :data="tableData"
+    :options="options"
+    :loading="isLoading"
+    isEditRow
+    pagination
+    v-model:editRowIndex="editRowIndex"
+    @confirm="handleConfirm"
+    @sizeChange="handleSizeChange"
+    @currentChange="handleCurrentChange"
+  >
     <!-- 自定义数据列 -->
     <template #date="{scope}">
       <el-icon-timer></el-icon-timer>
@@ -109,6 +119,14 @@ const handleDelClick = (scope: any) => {
 
 const handleConfirm = (scope: any) => {
   console.log('parent.scope', scope);
+}
+
+const handleCurrentChange = (val: number) => {
+  console.log(`current page: ${val}`);
+}
+
+const handleSizeChange = (val: number) => {
+  console.log(`${val} items pre page`);
 }
 
 setTimeout(() => {

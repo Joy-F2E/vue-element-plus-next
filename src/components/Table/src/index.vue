@@ -45,6 +45,18 @@
       </template>
     </el-table-column>
   </el-table>
+  <div class="pagination" v-if="pagination">
+    <el-pagination
+      v-model:current-page="currentPage"
+      v-model:page-size="pageSize"
+      background
+      layout="sizes, prev, pager, next"
+      :page-sizes="pageSizes"
+      :total="total"
+      @size-change="(val: number) => $emit('sizeChange', val)"
+      @current-change="(val: number) => $emit('currentChange', val)"
+    ></el-pagination>
+  </div>
 </template>
 <script lang="ts" setup>
 import { computed, watch, ref, onMounted } from 'vue';
@@ -93,17 +105,43 @@ const props = defineProps({
   editRowIndex: {
     type: String,
     default: ''
+  },
+  pagination: {
+    type: Boolean,
+    default: false
+  },
+  currentPage: {
+    type: Number,
+    default: 1
+  },
+  pageSize: {
+    type: Number,
+    default: 10
+  },
+  pageSizes: {
+    type: Array as PropType<number[]>,
+    default: [10, 20, 30, 50]
+  },
+  total: {
+    type: Number,
+    default: 100
+  },
+  paginationAlign: {
+    type: String as PropType<'left' | 'center' | 'right'>,
+    default: 'right'
   }
 })
 
 // 分发事件
-const emits = defineEmits(['confirm', 'cancel', 'update:editRowIndex'])
+const emits = defineEmits(['confirm', 'cancel', 'update:editRowIndex', 'sizeChange', 'currentChange'])
 
 let tableData = ref<any[]>(cloneDeep(props.data))
 
 let cloneEditRowIndex = ref<string>(cloneDeep(props.editRowIndex))
 
 let currentEdit = ref<string>('')
+
+let alignOptions = new Map([['left', 'flex-start'], ['right', 'flex-end'], ['center', 'center']])
 
 const handleEdit = (scope: any) => {
   // 唯一的标识
@@ -138,6 +176,8 @@ const handleRowClick = (row: any, column: any) => {
 let tableOptions = computed(() => props.options.filter(item => !item.action))
 
 let actionOptions = computed(() => props.options.find(item => item.action))
+
+let flexJustifity = computed(() => alignOptions.get(props.paginationAlign))
 
 // 监听父组件传递的数据
 watch(() => props.data, val => {
@@ -181,5 +221,11 @@ onMounted(() => {
     .cancel {
       color: green;
     }
+  }
+  .pagination {
+    display: flex;
+    justify-content: v-bind(flexJustifity);
+    align-items: center;
+    margin-top: 20px;
   }
 </style>
