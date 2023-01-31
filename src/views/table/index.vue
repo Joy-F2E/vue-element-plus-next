@@ -45,13 +45,14 @@
   </m-table>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue';
 import type { TableOptions } from '@/components/Table/src/types';
+import { ref, onMounted } from 'vue';
+import axios from 'axios'
 
 interface TableData {
-  date: string;
-  name: string;
-  address: string;
+  date: string,
+  name: string,
+  address: string
 }
 
 let isLoading = ref(true)
@@ -59,28 +60,7 @@ let isLoading = ref(true)
 let editRowIndex = ref<string>('')
 
 // 表格数据 
-let tableData = ref<TableData[]>([
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  }
-])
+let tableData = ref<TableData[]>([])
 
 // 表格配置
 let options: TableOptions[] = [
@@ -109,6 +89,23 @@ let options: TableOptions[] = [
   }
 ]
 
+let current = ref<number>(1)
+let pageSize = ref<number>(10)
+let total = ref<number>(0)
+
+let getTableData = () => {
+  axios.post('/api/list', {
+    current: current.value,
+    pageSize: pageSize.value
+  }).then((res: any) => {
+    tableData.value = res.data.data.rows
+    console.log(tableData.value);
+    
+    total.value = res.data.data.total
+    isLoading.value = false
+  })
+}
+
 const handleEditClick = (scope: any) => {
   editRowIndex.value = 'edit'
 }
@@ -122,16 +119,18 @@ const handleConfirm = (scope: any) => {
 }
 
 const handleCurrentChange = (val: number) => {
-  console.log(`current page: ${val}`);
+  current.value = val;
+  getTableData()
 }
 
 const handleSizeChange = (val: number) => {
-  console.log(`${val} items pre page`);
+  pageSize.value = val;
+  getTableData()
 }
 
-setTimeout(() => {
-  isLoading.value = false
-}, 0);
+onMounted(() => {
+  getTableData()
+})
 
 </script>
 <style lang="scss" scoped>

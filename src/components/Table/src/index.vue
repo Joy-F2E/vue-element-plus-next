@@ -59,7 +59,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, watch, ref, onMounted } from 'vue';
+import { computed, watch, watchEffect, ref, onMounted } from 'vue';
 import type { PropType } from 'vue';
 import type { TableOptions } from './types';
 import cloneDeep from 'lodash/cloneDeep';
@@ -135,7 +135,7 @@ const props = defineProps({
 // 分发事件
 const emits = defineEmits(['confirm', 'cancel', 'update:editRowIndex', 'sizeChange', 'currentChange'])
 
-let tableData = ref<any[]>(cloneDeep(props.data))
+let tableData = ref<any[]>([])
 
 let cloneEditRowIndex = ref<string>(cloneDeep(props.editRowIndex))
 
@@ -182,7 +182,10 @@ let flexJustifity = computed(() => alignOptions.get(props.paginationAlign))
 // 监听父组件传递的数据
 watch(() => props.data, val => {
   if (val) {
-    tableData.value = cloneDeep(val).map(item => item. isEditRow = false)
+    tableData.value = cloneDeep(val).map(item => {
+      item.isEditRow = false
+      return item
+    })
   }
 }, { deep: true })
 
@@ -194,8 +197,12 @@ watch(() => props.editRowIndex, val => {
 })
 
 onMounted(() => {
-  tableData.value.map(item => { item.isEditRow = false})
+  tableData.value.map(item => { 
+    item.isEditRow = false
+    return item
+  })
 })
+
 
 </script>
 <style lang="scss" scoped>
