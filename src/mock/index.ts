@@ -18,9 +18,7 @@ for (let index = 0; index < 100; index++) {
 }
 
 Mock.mock('/api/list', 'post', (params: any) => {
-  console.log('params', params);
   let info = JSON.parse(params.body)
-  console.info(info)
   let [index, size, total] = [info.current, info.pageSize, dataList.length]
   let len = total / size
   let totalPages = len - parseInt(String(len)) > 0 ? parseInt(String(len)) : 10

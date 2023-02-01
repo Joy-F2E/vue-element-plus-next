@@ -5,6 +5,7 @@
     :loading="isLoading"
     isEditRow
     pagination
+    :total="total"
     v-model:editRowIndex="editRowIndex"
     @confirm="handleConfirm"
     @sizeChange="handleSizeChange"
@@ -94,13 +95,12 @@ let pageSize = ref<number>(10)
 let total = ref<number>(0)
 
 let getTableData = () => {
+  isLoading.value = true
   axios.post('/api/list', {
     current: current.value,
     pageSize: pageSize.value
   }).then((res: any) => {
     tableData.value = res.data.data.rows
-    console.log(tableData.value);
-    
     total.value = res.data.data.total
     isLoading.value = false
   })

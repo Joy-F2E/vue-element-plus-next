@@ -59,7 +59,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, watch, watchEffect, ref, onMounted } from 'vue';
+import { computed, watch, ref, onMounted } from 'vue';
 import type { PropType } from 'vue';
 import type { TableOptions } from './types';
 import cloneDeep from 'lodash/cloneDeep';
@@ -110,21 +110,13 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  currentPage: {
-    type: Number,
-    default: 1
-  },
-  pageSize: {
-    type: Number,
-    default: 10
-  },
   pageSizes: {
     type: Array as PropType<number[]>,
     default: [10, 20, 30, 50]
   },
   total: {
     type: Number,
-    default: 100
+    default: 0
   },
   paginationAlign: {
     type: String as PropType<'left' | 'center' | 'right'>,
@@ -142,6 +134,11 @@ let cloneEditRowIndex = ref<string>(cloneDeep(props.editRowIndex))
 let currentEdit = ref<string>('')
 
 let alignOptions = new Map([['left', 'flex-start'], ['right', 'flex-end'], ['center', 'center']])
+
+let currentPage = ref<number>(1)
+ 
+let pageSize = ref<number>(10)
+
 
 const handleEdit = (scope: any) => {
   // 唯一的标识
