@@ -8,6 +8,7 @@
     :element-loading-background="loadingBackground"
     @row-click="handleRowClick"
   >
+    <!-- 数据列 -->
     <template v-for="(item, index) in tableOptions" :key="index">
       <el-table-column :label="item.label" :prop="item.prop" :align="item.align" :width="item.width">
         <template #default="scope">
@@ -29,9 +30,10 @@
             <template v-else>
               <!-- 自定义数据列 -->
               <slot v-if="item.slot" :name="item.slot" :scope="scope"></slot>
+              <!-- 正常显示的数据列 -->
               <span v-else>{{ scope.row[item.prop!] }}</span>
               <!-- 某一列的单元格是否可编辑 -->
-              <el-icon-edit v-if="item.editable" class="edit" @click="handleEdit(scope)"></el-icon-edit>
+              <el-icon-edit v-if="item.editable" class="edit" @click.stop="handleEdit(scope)"></el-icon-edit>
             </template>
           </template>
         </template>
@@ -157,6 +159,7 @@ const handleCancel =(scope: any) => {
 
 // 点击编辑行
 const handleRowClick = (row: any, column: any) => {
+  console.log(column);
   if (column.label === actionOptions.value!.label) {
     if (props.isEditRow && cloneEditRowIndex.value === props.editRowIndex) {
       row.isEditRow = !row.isEditRow
