@@ -29,4 +29,10 @@ let isCollapse = ref(false)
   padding: 0;
   border: 1px solid #eee;
 }
+.el-aside {
+  width: 200px;
+}
+::v-deep .el-menu-item span{
+  padding-left: 8px;
+}
 </style>

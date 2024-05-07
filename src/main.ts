@@ -6,6 +6,7 @@ import App from './App.vue';
 import mUI from './components';
 import router from './router/index';
 import { transToKeyBase } from './utils';
+import './mock'
 
 const app = createApp(App)
 

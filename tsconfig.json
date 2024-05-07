@@ -4,9 +4,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     },
-    "types": ["element-plus/global"]
+    "types": ["element-plus/global", "node"]
   },
 
   "references": [

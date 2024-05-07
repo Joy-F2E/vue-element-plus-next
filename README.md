@@ -133,7 +133,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 + 也可以借助插件 `auto-import-component`
 
 #### 7.进度记录：3-6
-
++ 完成Table组件新增
 
 #### github
 
